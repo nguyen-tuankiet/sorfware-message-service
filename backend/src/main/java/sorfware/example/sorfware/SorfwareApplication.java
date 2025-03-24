@@ -1,13 +1,13 @@
-package com.chat;
+package sorfware.example.sorfware;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WebsocketChatOauth2Application {
+public class SorfwareApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WebsocketChatOauth2Application.class, args);
+		SpringApplication.run(SorfwareApplication.class, args);
 	}
 
 }
