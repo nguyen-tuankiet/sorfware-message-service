@@ -21,8 +21,7 @@
 ### Hướng dẫn cài đặt
 #### 1. Clone repository:
 ```sh
-   git clone https://github.com/your-repo/chat-websocket-oauth2.git
-   cd chat-websocket-oauth2
+   git clone https://github.com/nguyen-tuankiet/websocket-chat-oauth2.git
 ```
 
 #### 2. Cấu hình backend
