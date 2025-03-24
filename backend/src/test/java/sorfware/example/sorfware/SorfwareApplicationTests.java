@@ -1,10 +1,10 @@
-package websocket_chat_oauth2.websocket_chat_oauth2;
+package sorfware.example.sorfware;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class WebsocketChatOauth2ApplicationTests {
+class SorfwareApplicationTests {
 
 	@Test
 	void contextLoads() {
