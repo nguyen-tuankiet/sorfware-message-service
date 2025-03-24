@@ -15,7 +15,7 @@
 ### Yêu cầu hệ thống
 - Java 17 hoặc mới hơn
 - Node.js 18+ và npm/yarn
-- PostgreSQL/MySQL
+- PostgreSQL/MongGodb
 - Maven
 
 ### Hướng dẫn cài đặt
