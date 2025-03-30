@@ -116,10 +116,10 @@ Dự án gồm **3 repo riêng**, cần clone từng cái:
 
 ```bash
 # Clone Auth Service (Spring Boot + PostgreSQL)
-git clone https://github.com/your-username/chat-auth-service.git
+git clone https://github.com/nguyen-tuankiet/sorfware-auth-service.git
 
 # Clone Chat Service (Spring Boot + MongoDB + WebSocket)
-git clone https://github.com/your-username/chat-service.git
+git clone https://github.com/nguyen-tuankiet/sorfware-message-service.git
 
 # Clone Frontend (React)
 git clone https://github.com/your-username/chat-frontend.git
