@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat WebSocket Đơn Giản</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .chat-header {
+            background-color: #4b61d1;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .sender {
+            font-weight: bold;
+            font-size: 0.8em;
+            margin-bottom: 3px;
+        }
+        .received {
+            background-color: #e9ecef;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        .sent {
+            background-color: #d1e7ff;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        .message-time {
+            font-size: 0.7em;
+            color: #777;
+            text-align: right;
+            margin-top: 2px;
+        }
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .chat-input button {
+            background-color: #4b61d1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .chat-input button:hover {
+            background-color: #3a4cb7;
+        }
+        .status {
+            padding: 10px;
+            text-align: center;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+        }
+        .online {
+            color: green;
+        }
+        .offline {
+            color: red;
+        }
+        .username-container {
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+        }
+        .username-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .username-container button {
+            background-color: #4b61d1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-header">
+        <h2>Chat WebSocket Đơn Giản</h2>
+    </div>
+    <div class="status" id="status">
+        <span class="offline">Đang ngắt kết nối</span>
+    </div>
+    <div id="username-form" class="username-container">
+        <input type="text" id="username" placeholder="Nhập tên của bạn" value="User1">
+        <button id="connect-btn">Kết nối</button>
+    </div>
+    <div class="chat-messages" id="messages">
+        <!-- Messages will be added here -->
+    </div>
+    <div class="chat-input">
+        <input type="text" id="message" placeholder="Nhập tin nhắn..." disabled>
+        <button id="send-btn" disabled>Gửi</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+<script>
+    // DOM Elements
+    const statusEl = document.getElementById('status');
+    const messagesEl = document.getElementById('messages');
+    const messageInput = document.getElementById('message');
+    const sendBtn = document.getElementById('send-btn');
+    const usernameInput = document.getElementById('username');
+    const connectBtn = document.getElementById('connect-btn');
+    const usernameForm = document.getElementById('username-form');
+
+    let stompClient = null;
+    let username = '';
+
+    // Connect to WebSocket
+    function connect() {
+        username = usernameInput.value.trim();
+        if (!username) {
+            alert('Vui lòng nhập tên của bạn!');
+            return;
+        }
+
+        // Create STOMP client
+        stompClient = new StompJs.Client({
+            brokerURL: 'ws://localhost:8080/ws/websocket',
+            debug: function(str) {
+                console.log(str);
+            },
+            reconnectDelay: 5000,
+            heartbeatIncoming: 4000,
+            heartbeatOutgoing: 4000
+        });
+
+        // Connect callback
+        stompClient.onConnect = function (frame) {
+            // Update UI
+            statusEl.innerHTML = '<span class="online">Đã kết nối</span>';
+            messageInput.disabled = false;
+            sendBtn.disabled = false;
+            usernameInput.disabled = true;
+            connectBtn.disabled = true;
+
+            // Subscribe to public channel
+            stompClient.subscribe('/topic/public', function (message) {
+                showMessage(JSON.parse(message.body));
+            });
+
+            // Send join notification
+            sendMessage({
+                senderName: username,
+                content: 'đã tham gia cuộc trò chuyện',
+                isJoinMessage: true
+            });
+        };
+
+        // Error callback
+        stompClient.onStompError = function (frame) {
+            console.error('Stomp error', frame);
+            statusEl.innerHTML = '<span class="offline">Lỗi kết nối: ' + frame.headers['message'] + '</span>';
+        };
+
+        // Disconnect callback
+        stompClient.onWebSocketClose = function() {
+            statusEl.innerHTML = '<span class="offline">Đã ngắt kết nối</span>';
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+            usernameInput.disabled = false;
+            connectBtn.disabled = false;
+        };
+
+        // Activate connection
+        stompClient.activate();
+    }
+
+    // Disconnect from WebSocket
+    function disconnect() {
+        if (stompClient) {
+            // Send leave notification
+            sendMessage({
+                senderName: username,
+                content: 'đã rời khỏi cuộc trò chuyện',
+                isLeaveMessage: true
+            });
+
+            // Disconnect client
+            stompClient.deactivate();
+            stompClient = null;
+        }
+
+        // Update UI
+        statusEl.innerHTML = '<span class="offline">Đã ngắt kết nối</span>';
+        messageInput.disabled = true;
+        sendBtn.disabled = true;
+        usernameInput.disabled = false;
+        connectBtn.disabled = false;
+    }
+
+    // Send message to server
+    function sendMessage(messageObj) {
+        if (!stompClient || !stompClient.connected) {
+            alert('Không thể gửi tin nhắn. Vui lòng kết nối lại!');
+            return;
+        }
+
+        // Check nếu thiếu content hoặc senderName
+        if (!messageObj || !messageObj.content || !messageObj.senderName) {
+            console.warn('Không gửi được: thiếu nội dung hoặc tên người gửi');
+            return;
+        }
+
+        console.log("Gửi tin nhắn:", messageObj);
+
+        stompClient.publish({
+            destination: '/app/chat.sendMessage',
+            body: JSON.stringify(messageObj)
+        });
+
+        // Nếu không phải tin nhắn tham gia/rời nhóm thì clear input
+        if (!messageObj.isJoinMessage && !messageObj.isLeaveMessage) {
+            messageInput.value = '';
+            messageInput.focus();
+        }
+    }
+
+
+    // Show received message in UI
+    function showMessage(message) {
+        const timestamp = new Date().toLocaleTimeString();
+        const messageEl = document.createElement('div');
+
+        if (message.isJoinMessage || message.isLeaveMessage) {
+            // System message
+            messageEl.innerHTML = `
+                    <div class="message" style="text-align: center; background-color: #f0f0f0; margin: 5px auto; padding: 5px 15px; border-radius: 10px; color: #666;">
+                        <b>${message.senderName}</b> ${message.content}
+                        <div class="message-time">${timestamp}</div>
+                    </div>
+                `;
+        } else {
+            // Check if it's sent by current user
+            const isSentByMe = message.senderName === username;
+            const messageClass = isSentByMe ? 'sent' : 'received';
+
+            messageEl.innerHTML = `
+                    <div class="message ${messageClass}">
+                        <div class="sender">${message.senderName}</div>
+                        ${message.content}
+                        <div class="message-time">${timestamp}</div>
+                    </div>
+                `;
+        }
+
+        messagesEl.appendChild(messageEl);
+
+        // Scroll to bottom
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    // Event Listeners
+    connectBtn.addEventListener('click', connect);
+
+    sendBtn.addEventListener('click', function() {
+        const content = messageInput.value.trim();
+        if (content) {
+            sendMessage({
+                senderName: username,
+                content: content
+            });
+        }
+    });
+
+    messageInput.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            const content = messageInput.value.trim();
+            if (content) {
+                sendMessage({
+                    senderName: username,
+                    content: content
+                });
+            }
+        }
+    });
+
+    // Handle window close
+    window.addEventListener('beforeunload', disconnect);
+</script>
+</body>
+</html>
