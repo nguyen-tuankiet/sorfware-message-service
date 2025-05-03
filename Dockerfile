@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3-openjdk-21 AS build
+FROM maven:3 AS build
 
 WORKDIR /app
 
