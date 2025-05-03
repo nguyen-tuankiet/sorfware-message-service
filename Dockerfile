@@ -1,8 +1,5 @@
 # Build stage
-FROM openjdk:21-jdk-slim AS build
-
-# Install Maven
-RUN apt-get update && apt-get install -y maven
+FROM maven:3-openjdk-21 AS build
 
 WORKDIR /app
 
