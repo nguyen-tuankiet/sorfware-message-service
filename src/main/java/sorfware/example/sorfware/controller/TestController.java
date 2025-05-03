@@ -24,4 +24,9 @@ public class TestController {
             return ResponseEntity.internalServerError().body("Failed to connect to MongoDB: " + e.getMessage());
         }
     }
+
+    @GetMapping("/test")
+    public String getTestPage() {
+        return "forward:/test.html";
+    }
 } 
