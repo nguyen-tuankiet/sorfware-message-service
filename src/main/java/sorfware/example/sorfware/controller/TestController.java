@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("")
 public class TestController {
 
     @Autowired
@@ -25,8 +25,8 @@ public class TestController {
         }
     }
 
-    @GetMapping("/test")
-    public String getTestPage() {
-        return "forward:/test.html";
+     @GetMapping("/chat")
+    public String serveTestPage() {
+        return "test.html";  // Trả về file test.html từ thư mục resources/static
     }
 } 
