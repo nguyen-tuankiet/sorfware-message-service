@@ -27,6 +27,6 @@ public class TestController {
 
      @GetMapping("/chat")
     public String serveTestPage() {
-        return "test.html";  // Trả về file test.html từ thư mục resources/static
+        return  "forward:/test.html";
     }
 } 
