@@ -25,8 +25,8 @@ public class TestController {
         }
     }
 
-     @GetMapping("/chat")
-    public String serveTestPage() {
-       return "redirect:/test.html";
-    }
+    @GetMapping("/chat")
+public ModelAndView serveTestPage() {
+    return new ModelAndView("forward:/test.html");
+}
 } 
