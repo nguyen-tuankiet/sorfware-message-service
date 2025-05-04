@@ -27,6 +27,6 @@ public class TestController {
 
      @GetMapping("/chat")
     public String serveTestPage() {
-        return  "forward:/test.html";
+       return "redirect:/test.html";
     }
 } 
