@@ -18,7 +18,7 @@ public class SecurityConfig {
                         .disable()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws/**", "/api/test/**", "/messages").permitAll()
+                        .requestMatchers("/ws/**", "/api/test/**", "/messages", "/chat").permitAll()
                         .requestMatchers("/", "/test.html", "/*.js", "/*.css", "/images/**", "/static/**").permitAll()
                         .anyRequest().authenticated()
                 )
