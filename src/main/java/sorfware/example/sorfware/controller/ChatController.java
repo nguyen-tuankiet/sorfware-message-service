@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sorfware.example.sorfware.model.Message;
+import sorfware.example.sorfware.model.entity.Message;
 import sorfware.example.sorfware.service.ChatService;
 
 import java.util.List;
