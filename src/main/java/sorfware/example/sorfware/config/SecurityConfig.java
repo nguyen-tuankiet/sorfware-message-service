@@ -18,8 +18,7 @@ public class SecurityConfig {
                         .disable()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws/**", "/api/test/**", "/messages", "/chat").permitAll()
-                        .requestMatchers("/", "/test.html", "/*.js", "/*.css", "/images/**", "/static/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(withDefaults());

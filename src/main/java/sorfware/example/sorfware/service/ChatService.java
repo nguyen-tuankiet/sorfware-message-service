@@ -3,10 +3,9 @@ package sorfware.example.sorfware.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sorfware.example.sorfware.model.Message;
+import sorfware.example.sorfware.model.entity.Message;
 import sorfware.example.sorfware.repository.MessageRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

@@ -262,7 +262,7 @@
     function showMessage(message) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message';
-        
+
         if (message.isJoinMessage || message.isLeaveMessage) {
             messageDiv.className += ' received';
             messageDiv.innerHTML = `<div class="sender">${message.senderName}</div>
@@ -274,7 +274,7 @@
                                   <div>${message.content}</div>
                                   <div class="message-time">${new Date().toLocaleTimeString()}</div>`;
         }
-        
+
         messagesEl.appendChild(messageDiv);
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
@@ -311,4 +311,4 @@
     });
 </script>
 </body>
-</html> 
+</html>
