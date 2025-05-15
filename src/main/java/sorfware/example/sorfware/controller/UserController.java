@@ -21,23 +21,11 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ApiResponse> createUser(@RequestBody User user) {
-        try {
-            System.out.println("Attempting to create user: " + user);
-            User savedUser = userRepository.save(user);
-            System.out.println("User created successfully with ID: " + savedUser.getId());
-            ApiResponse response = ApiResponse.builder(savedUser)
-                    .message("User created successfully")
-                    .build();
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            System.err.println("Error creating user: " + e.getMessage());
-            e.printStackTrace();
-            ApiResponse errorResponse = ApiResponse.builder()
-                    .status(500)
-                    .message("Error creating user: " + e.getMessage())
-                    .build();
-            return ResponseEntity.status(500).body(errorResponse);
-        }
+        User savedUser = userRepository.save(user);
+        ApiResponse response = ApiResponse.builder(savedUser)
+                .message("User created successfully")
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping

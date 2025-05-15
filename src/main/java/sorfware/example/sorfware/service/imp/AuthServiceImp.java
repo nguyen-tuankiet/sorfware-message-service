@@ -1,25 +1,20 @@
 package sorfware.example.sorfware.service.imp;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import sorfware.example.sorfware.model.dto.request.LoginRequest;
 import sorfware.example.sorfware.model.dto.response.LoginResponse;
 import sorfware.example.sorfware.model.entity.User;
 import sorfware.example.sorfware.repository.UserRepository;
 import sorfware.example.sorfware.service.AuthService;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
+@Service
+@RequiredArgsConstructor
 public class AuthServiceImp implements AuthService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public  Optional<LoginResponse> login(LoginRequest loginRequest, HttpSession session) {
