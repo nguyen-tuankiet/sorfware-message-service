@@ -23,5 +23,17 @@ public class Message {
     @JsonSerialize(using = DateSerializer.class)
     private Date timestamp;
     private String content;
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id='" + id + '\'' +
+                ", chatId='" + chatId + '\'' +
+                ", senderId='" + senderId + '\'' +
+                ", recipientId='" + recipientId + '\'' +
+                ", timestamp=" + timestamp +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }
 

@@ -17,22 +17,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
-        System.out.println("Login attempt: " + loginRequest.getEmail());
-        
-        return authService.login(loginRequest, session)
-            .map(loginResponse -> ResponseEntity.ok(
-                ApiResponse.builder(loginResponse)
-                    .message("Login successful! UserId saved in session: " + loginResponse.getId())
-                    .build()
-            ))
-            .orElseGet(() -> ResponseEntity.status(401).body(
-                ApiResponse.builder()
-                    .status(401)
-                    .resultCode(401)
-                    .message("Invalid email or password")
-                    .build()
-            ));
+        ApiResponse response = ApiResponse.builder(authService.login(loginRequest, session)).build();
+        return ResponseEntity.ok(response);
     }
-
-
-} 
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat WebSocket Đơn Giản</title>
+    <title>Chat WebSocket Test</title>
     <style>
         * {
             margin: 0;
@@ -107,20 +107,14 @@
         .offline {
             color: red;
         }
-        .username-container {
+        .user-select {
             padding: 15px;
             background-color: #f9f9f9;
             border-bottom: 1px solid #ddd;
             display: flex;
+            gap: 10px;
         }
-        .username-container input {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            margin-right: 10px;
-        }
-        .username-container button {
+        .user-select button {
             background-color: #4b61d1;
             color: white;
             border: none;
@@ -128,19 +122,22 @@
             border-radius: 20px;
             cursor: pointer;
         }
+        .user-select button:hover {
+            background-color: #3a4cb7;
+        }
     </style>
 </head>
 <body>
 <div class="chat-container">
     <div class="chat-header">
-        <h2>Chat WebSocket Đơn Giản</h2>
+        <h2>Chat WebSocket Test</h2>
     </div>
     <div class="status" id="status">
         <span class="offline">Đang ngắt kết nối</span>
     </div>
-    <div id="username-form" class="username-container">
-        <input type="text" id="username" placeholder="Nhập tên của bạn" value="User1">
-        <button id="connect-btn">Kết nối</button>
+    <div class="user-select">
+        <button onclick="connectAsUser('6825ae87e7dcd175990e5980')">Kết nối với User 1</button>
+        <button onclick="connectAsUser('6823601ac9fd576c3f69272e')">Kết nối với User 2</button>
     </div>
     <div class="chat-messages" id="messages">
         <!-- Messages will be added here -->
@@ -158,24 +155,25 @@
     const messagesEl = document.getElementById('messages');
     const messageInput = document.getElementById('message');
     const sendBtn = document.getElementById('send-btn');
-    const usernameInput = document.getElementById('username');
-    const connectBtn = document.getElementById('connect-btn');
-    const usernameForm = document.getElementById('username-form');
 
     let stompClient = null;
-    let username = '';
+    let currentUserId = null;
+    const otherUserId = {
+        '6825ae87e7dcd175990e5980': '6823601ac9fd576c3f69272e',
+        '6823601ac9fd576c3f69272e': '6825ae87e7dcd175990e5980'
+    };
 
     // Connect to WebSocket
-    function connect() {
-        username = usernameInput.value.trim();
-        if (!username) {
-            alert('Vui lòng nhập tên của bạn!');
-            return;
+    function connectAsUser(userId) {
+        if (stompClient) {
+            stompClient.deactivate();
         }
 
+        currentUserId = userId;
+        
         // Create STOMP client
         stompClient = new StompJs.Client({
-            brokerURL: 'wss://sorfware-message.onrender.com/ws/websocket',
+            brokerURL: 'ws://localhost:8080/ws/websocket',
             debug: function(str) {
                 console.log(str);
             },
@@ -187,22 +185,14 @@
         // Connect callback
         stompClient.onConnect = function (frame) {
             // Update UI
-            statusEl.innerHTML = '<span class="online">Đã kết nối</span>';
+            statusEl.innerHTML = `<span class="online">Đã kết nối với User ${currentUserId}</span>`;
             messageInput.disabled = false;
             sendBtn.disabled = false;
-            usernameInput.disabled = true;
-            connectBtn.disabled = true;
 
-            // Subscribe to public channel
-            stompClient.subscribe('/topic/public', function (message) {
-                showMessage(JSON.parse(message.body));
-            });
-
-            // Send join notification
-            sendMessage({
-                senderName: username,
-                content: 'đã tham gia cuộc trò chuyện',
-                isJoinMessage: true
+            // Subscribe to user's queue
+            stompClient.subscribe(`/user/${currentUserId}/queue/messages`, function (message) {
+                const receivedMessage = JSON.parse(message.body);
+                showMessage(receivedMessage, false);
             });
         };
 
@@ -217,97 +207,70 @@
             statusEl.innerHTML = '<span class="offline">Đã ngắt kết nối</span>';
             messageInput.disabled = true;
             sendBtn.disabled = true;
-            usernameInput.disabled = false;
-            connectBtn.disabled = false;
         };
 
         // Activate connection
         stompClient.activate();
     }
 
-    // Disconnect from WebSocket
-    function disconnect() {
-        if (stompClient) {
-            // Send leave notification
-            sendMessage({
-                senderName: username,
-                content: 'đã rời khỏi cuộc trò chuyện',
-                isLeaveMessage: true
-            });
-
-            // Disconnect client
-            stompClient.deactivate();
-            stompClient = null;
-        }
-
-        // Update UI
-        statusEl.innerHTML = '<span class="offline">Đã ngắt kết nối</span>';
-        messageInput.disabled = true;
-        sendBtn.disabled = true;
-        usernameInput.disabled = false;
-        connectBtn.disabled = false;
-    }
-
     // Send message
-    function sendMessage(message) {
-        if (stompClient && stompClient.connected) {
-            stompClient.publish({
-                destination: '/app/chat.sendMessage',
-                body: JSON.stringify(message)
-            });
+    function sendMessage() {
+        const content = messageInput.value.trim();
+        if (!content || !stompClient || !stompClient.connected) {
+            return;
         }
+
+        const message = {
+            senderId: currentUserId,
+            recipientId: otherUserId[currentUserId],
+            content: content
+        };
+
+        stompClient.publish({
+            destination: '/app/chat',
+            body: JSON.stringify(message)
+        });
+
+        // Show sent message in UI
+        showMessage({
+            senderId: currentUserId,
+            content: content,
+            timestamp: new Date()
+        }, true);
+
+        messageInput.value = '';
     }
 
     // Show message in chat
-    function showMessage(message) {
+    function showMessage(message, isSent) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = 'message';
-
-        if (message.isJoinMessage || message.isLeaveMessage) {
-            messageDiv.className += ' received';
-            messageDiv.innerHTML = `<div class="sender">${message.senderName}</div>
-                                  <div>${message.content}</div>`;
-        } else {
-            const isSent = message.senderName === username;
-            messageDiv.className += isSent ? ' sent' : ' received';
-            messageDiv.innerHTML = `<div class="sender">${message.senderName}</div>
-                                  <div>${message.content}</div>
-                                  <div class="message-time">${new Date().toLocaleTimeString()}</div>`;
-        }
+        messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+        
+        const timestamp = new Date(message.timestamp).toLocaleTimeString();
+        
+        messageDiv.innerHTML = `
+            <div class="sender">${message.senderId}</div>
+            <div>${message.content}</div>
+            <div class="message-time">${timestamp}</div>
+        `;
 
         messagesEl.appendChild(messageDiv);
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
     // Event listeners
-    connectBtn.addEventListener('click', connect);
-    sendBtn.addEventListener('click', function() {
-        const message = messageInput.value.trim();
-        if (message) {
-            sendMessage({
-                senderName: username,
-                content: message
-            });
-            messageInput.value = '';
-        }
-    });
-
+    sendBtn.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            const message = messageInput.value.trim();
-            if (message) {
-                sendMessage({
-                    senderName: username,
-                    content: message
-                });
-                messageInput.value = '';
-            }
+            sendMessage();
         }
     });
 
-    // Handle page unload
+    // Handle window close
     window.addEventListener('beforeunload', function() {
-        disconnect();
+        if (stompClient) {
+            stompClient.deactivate();
+        }
     });
 </script>
 </body>
