@@ -14,4 +14,6 @@ public interface MessageService {
     public Message save(Message message);
 
     public List<Message> getAllMessages();
+
+    List<Message> findMessageByKeyword(String keyword);
 }

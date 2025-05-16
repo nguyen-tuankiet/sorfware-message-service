@@ -15,7 +15,7 @@ import sorfware.example.sorfware.service.MessageService;
 import java.util.List;
 
 @Controller
-public class MessageController {
+public class    MessageController {
 
     @Autowired
     private MessageService messageService;

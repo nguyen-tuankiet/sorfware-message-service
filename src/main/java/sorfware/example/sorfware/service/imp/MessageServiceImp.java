@@ -27,4 +27,9 @@ public class MessageServiceImp implements MessageService {
     public List<Message> getAllMessages() {
         return messageRepository.findAll();
     }
+
+    @Override
+    public List<Message> findMessageByKeyword(String keyword) {
+        return messageRepository.findByContentContainingIgnoreCase(keyword);  // 4.6.2
+    }
 }
