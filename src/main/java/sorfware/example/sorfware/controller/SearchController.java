@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import sorfware.example.sorfware.model.dto.response.ApiResponse;
 import sorfware.example.sorfware.service.UserService;
 import sorfware.example.sorfware.service.MessageService;
+import sorfware.example.sorfware.model.dto.request.SearchRequest;
+import sorfware.example.sorfware.model.dto.response.SearchResult;
+
 
 import java.util.List;
 
@@ -45,42 +48,8 @@ public class SearchController {
     }
 
     // DTO nhận request từ client
-    public static class SearchRequest {
-        private String keyword;
 
-        public String getKeyword() {
-            return keyword;
-        }
-
-        public void setKeyword(String keyword) {
-            this.keyword = keyword;
-        }
-    }
 
     // DTO trả về kết quả tìm kiếm
-    public static class SearchResult {
-        private List<?> users;
-        private List<?> messages;
 
-        public SearchResult(List<?> users, List<?> messages) {
-            this.users = users;
-            this.messages = messages;
-        }
-
-        public List<?> getUsers() {
-            return users;
-        }
-
-        public void setUsers(List<?> users) {
-            this.users = users;
-        }
-
-        public List<?> getMessages() {
-            return messages;
-        }
-
-        public void setMessages(List<?> messages) {
-            this.messages = messages;
-        }
-    }
 }
