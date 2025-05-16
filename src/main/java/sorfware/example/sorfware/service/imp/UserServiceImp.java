@@ -6,6 +6,7 @@ import sorfware.example.sorfware.model.entity.User;
 import sorfware.example.sorfware.repository.UserRepository;
 import sorfware.example.sorfware.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,6 +23,11 @@ public class UserServiceImp implements UserService {
     @Override
     public Optional<User> findByName(String name) {
         return userRepository.findByName(name);
+    }
+
+    @Override
+    public List<User> findUserByKeyword(String keyword) {
+        return userRepository.findByNameContainingIgnoreCase(keyword);
     }
 
 }
