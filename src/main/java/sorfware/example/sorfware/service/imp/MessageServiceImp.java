@@ -2,12 +2,17 @@ package sorfware.example.sorfware.service.imp;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import sorfware.example.sorfware.model.entity.Message;
+import sorfware.example.sorfware.model.entity.Room;
 import sorfware.example.sorfware.repository.MessageRepository;
 import sorfware.example.sorfware.service.MessageService;
 import sorfware.example.sorfware.service.RoomService;
 
+import javax.management.Query;
 import java.util.List;
 
 @Service
@@ -15,6 +20,7 @@ import java.util.List;
 public class MessageServiceImp implements MessageService {
     private final MessageRepository messageRepository;
     private final RoomService roomService;
+    private final MongoTemplate mongoTemplate;
 
     public Message save(Message message) {
         var chatId = roomService.getRoomId(message.getSenderId(), message.getRecipientId(), true)
@@ -38,4 +44,9 @@ public class MessageServiceImp implements MessageService {
     public List<Message> getMessageHistory(String senderId, String recipientId) {
         return messageRepository.findConversation(senderId, recipientId);
     }
+
+    //Khi có tin nhắn mới thì cập nhật lastMessage trong Room
+    public void updateLastMessage(String chatId, Message message) {
+    }
+
 }

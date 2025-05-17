@@ -7,6 +7,7 @@ import sorfware.example.sorfware.model.entity.Room;
 import sorfware.example.sorfware.repository.RoomRepository;
 import sorfware.example.sorfware.service.RoomService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,11 @@ public class RoomServiceImp implements RoomService {
                         return Optional.empty();
                     }
                 });
+    }
+
+    @Override
+    public List<Room> getRoomsByUserId(String userId) {
+        return roomRepository.findRoomsByUserId(userId);
     }
 
     public String createChatId(String senderId, String recipientId) {
@@ -48,4 +54,5 @@ public class RoomServiceImp implements RoomService {
 
         return chatId;
     }
+
 }
