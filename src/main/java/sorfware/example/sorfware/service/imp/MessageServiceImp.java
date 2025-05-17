@@ -32,4 +32,10 @@ public class MessageServiceImp implements MessageService {
     public List<Message> findMessageByKeyword(String keyword) {
         return messageRepository.findByContentContainingIgnoreCase(keyword);  // 4.6.2
     }
+
+    //Phương thức lấy tin nhắn giữa 2 người
+    @Override
+    public List<Message> getMessageHistory(String senderId, String recipientId) {
+        return messageRepository.findConversation(senderId, recipientId);
+    }
 }
