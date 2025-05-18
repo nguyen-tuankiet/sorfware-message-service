@@ -14,4 +14,9 @@ public interface MessageService {
     public Message save(Message message);
 
     public List<Message> getAllMessages();
+
+    List<Message> findMessageByKeyword(String keyword);
+
+    //service lấy lịch sử tin nhắn giữa 2 người
+    List<Message> getMessageHistory(String senderId, String recipientId);
 }

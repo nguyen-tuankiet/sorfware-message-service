@@ -5,6 +5,6 @@ import sorfware.example.sorfware.model.entity.Room;
 
 import java.util.Optional;
 
-public interface RoomRepository extends MongoRepository<Room, String> {
+public interface RoomRepository extends MongoRepository<Room, String>, RoomRepositoryCustom {
     Optional<Room> findBySenderIdAndRecipientId(String senderId, String recipientId);
 }
