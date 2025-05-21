@@ -12,7 +12,9 @@ public interface MessageRepository extends MongoRepository<Message, String> {
 
     List<Message> findByContentContainingIgnoreCase(String keyword); // 4.6.3
 
-    @Query("{ $or: [ { $and: [ { senderId: ?0 }, { recipientId: ?1 } ] }, { $and: [ { senderId: ?1 }, { recipientId: ?0 } ] } ] }")
-    List<Message> findConversation(String senderId, String recipientId);
-
+    /**
+     * Usecase 3: Lịch sử trò chuyện
+     * U3.1: Hiển thị tin nhắn cũ
+     * query lấy ra danh sách tin nhắn bằng chatId*/
+    List<Message> findByChatIdOrderByTimestampAsc(String chatId);
 }

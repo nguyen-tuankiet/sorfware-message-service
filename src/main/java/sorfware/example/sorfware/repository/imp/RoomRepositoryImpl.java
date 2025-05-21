@@ -14,15 +14,16 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /**
+     * UC3.1
+     * Hiển thị danh sách cuộc trò chuyện theo id user và sắp xếp theo thời gian tin nhắn cuối cùng*/
     @Override
     public List<Room> findRoomsByUserId(String userId) {
-        Criteria criteria = new Criteria().orOperator(
-                Criteria.where("senderId").is(userId),
-                Criteria.where("recipientId").is(userId)
-        );
+        Criteria criteria = Criteria.where("senderId").is(userId); // Tìm phòng có senderId là userId
         Query query = new Query(criteria)
-                .with(Sort.by(Sort.Direction.DESC, "lastMessage.timestamp"));
+                .with(Sort.by(Sort.Direction.DESC, "lastMessage.timestamp")); // Sắp xếp theo thời gian tin nhắn cuối
 
         return mongoTemplate.find(query, Room.class);
     }
+
 }
