@@ -14,7 +14,7 @@ import sorfware.example.sorfware.service.MessageService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/")
+@RequestMapping("api/message")
 public class MessageController {
 
     @Autowired
@@ -54,7 +54,7 @@ public class MessageController {
      * Usecase 3: Lịch sử trò chuyện
      * U3.2: Hiển thị tin nhắn cũ
      */
-    @GetMapping("/messages/history")
+    @GetMapping("/history")
     @ResponseBody
     public List<Message> getMessageHistory(@RequestParam String chatId) {
         return messageService.getMessageHistory(chatId);
