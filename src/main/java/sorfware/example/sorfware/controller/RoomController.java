@@ -18,6 +18,9 @@ public class RoomController {
 
     private final RoomService roomService;
 
+    /**
+     * UC3.2
+     * controller Lấy cuộc trò chuyện bằng id người gửi và id người nhận*/
     @GetMapping("/{userId}")
     public ResponseEntity<List<Room>> getRoomsByUserId(@PathVariable String userId) {
         List<Room> rooms = roomService.getRoomsByUserId(userId);
