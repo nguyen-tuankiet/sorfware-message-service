@@ -6,17 +6,16 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import sorfware.example.sorfware.model.entity.ChatNotification;
 import sorfware.example.sorfware.model.entity.Message;
 import sorfware.example.sorfware.service.MessageService;
 
 import java.util.List;
 
-@Controller
-public class    MessageController {
+@RestController
+@RequestMapping("api/message")
+public class MessageController {
 
     @Autowired
     private MessageService messageService;
@@ -51,12 +50,13 @@ public class    MessageController {
         return messageService.getAllMessages();
     }
 
-    /*
-    * Usecase 3: Lịch sử trò chuyện
-    * U3.1: Hiển thị tin nhắn cũ*/
-    @GetMapping("/messages/history")
+    /**
+     * Usecase 3: Lịch sử trò chuyện
+     * U3.2: Hiển thị tin nhắn cũ
+     */
+    @GetMapping("/history")
     @ResponseBody
-    public List<Message> getMessageHistory(@RequestParam String senderId, @RequestParam String recipientId) {
-        return messageService.getMessageHistory(senderId, recipientId);
+    public List<Message> getMessageHistory(@RequestParam String chatId) {
+        return messageService.getMessageHistory(chatId);
     }
 }

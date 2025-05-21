@@ -16,6 +16,9 @@ public class RoomServiceImp implements RoomService {
     private final RoomRepository roomRepository;
     private final MongoTemplate mongoTemplate;
 
+    /**
+     * UC3.2
+     * service Lấy cuộc trò chuyện bằng id người gửi và id người nhận*/
     public Optional<String> getRoomId(String senderId, String recipientId, boolean createNewRoomIfNotExist) {
         return roomRepository.findBySenderIdAndRecipientId(senderId, recipientId)
                 .map(Room::getChatId)
@@ -28,7 +31,9 @@ public class RoomServiceImp implements RoomService {
                     }
                 });
     }
-
+    /**
+     * UC3.1
+     * service Hiển thị danh sách cuộc trò chuyện theo id user và sắp xếp theo thời gian tin nhắn cuối cùng*/
     @Override
     public List<Room> getRoomsByUserId(String userId) {
         return roomRepository.findRoomsByUserId(userId);

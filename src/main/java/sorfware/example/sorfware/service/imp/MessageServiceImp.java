@@ -41,8 +41,8 @@ public class MessageServiceImp implements MessageService {
 
     //Phương thức lấy tin nhắn giữa 2 người
     @Override
-    public List<Message> getMessageHistory(String senderId, String recipientId) {
-        return messageRepository.findConversation(senderId, recipientId);
+    public List<Message> getMessageHistory(String chatId) {
+        return messageRepository.findByChatIdOrderByTimestampAsc(chatId);
     }
 
     //Khi có tin nhắn mới thì cập nhật lastMessage trong Room

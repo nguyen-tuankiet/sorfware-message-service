@@ -17,6 +17,9 @@ public interface MessageService {
 
     List<Message> findMessageByKeyword(String keyword);
 
-    //service lấy lịch sử tin nhắn giữa 2 người
-    List<Message> getMessageHistory(String senderId, String recipientId);
+    /**
+     * Usecase 3.1: Lịch sử trò chuyện
+     * U3.1: Hiển thị tin nhắn cũ
+     * service lấy ra danh sách tin nhắn bằng id người gửi và id người nhận*/
+    List<Message> getMessageHistory(String chatId);
 }
