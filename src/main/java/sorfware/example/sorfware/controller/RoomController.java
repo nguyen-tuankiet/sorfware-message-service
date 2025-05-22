@@ -10,6 +10,7 @@ import sorfware.example.sorfware.model.entity.Message;
 import sorfware.example.sorfware.model.entity.Room;
 import sorfware.example.sorfware.service.RoomService;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,22 @@ public class RoomController {
     }
 
     @GetMapping("/lastMessage/{chatId}")
-    public ResponseEntity<Object> updateLastMessage(@PathVariable String chatId, Message message) {
+    public ResponseEntity<Object> updateLastMessage(@PathVariable String chatId) {
+        // Tạo một tin nhắn giả lập để test
+        Message message = Message.builder()
+                .id("test-msg-id")
+                .chatId(chatId)
+                .senderId("user1")
+                .recipientId("user2")
+                .content("Tin nhắn cuối cùng test")
+                .timestamp(new Date())
+                .build();
 
+        // Gọi service để cập nhật lastMessage
+        roomService.updateLastMessage(chatId, message);
+
+        roomService.getAll
+
+        return ResponseEntity.ok("Đã cập nhật lastMessage cho chatId: " + chatId);
     }
 }
