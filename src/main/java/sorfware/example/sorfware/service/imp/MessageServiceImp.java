@@ -27,6 +27,10 @@ public class MessageServiceImp implements MessageService {
                 .orElseThrow(() -> new RuntimeException("Cannot create chatId"));
         message.setChatId(chatId);
         messageRepository.save(message);
+
+        //Cập nhật tin nhắn cuối trong phòng chat
+        roomService.updateLastMessage(chatId, message);
+
         return message;
     }
 
@@ -43,10 +47,6 @@ public class MessageServiceImp implements MessageService {
     @Override
     public List<Message> getMessageHistory(String chatId) {
         return messageRepository.findByChatIdOrderByTimestampAsc(chatId);
-    }
-
-    //Khi có tin nhắn mới thì cập nhật lastMessage trong Room
-    public void updateLastMessage(String chatId, Message message) {
     }
 
 }
