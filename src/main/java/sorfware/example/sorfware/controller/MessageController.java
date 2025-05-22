@@ -41,6 +41,17 @@ public class MessageController {
                         .timestamp(savedMessage.getTimestamp())
                         .build()
         );
+
+        // Gửi sự kiện cập nhật room cho cả 2 người dùng (sender & recipient)
+        simpMessagingTemplate.convertAndSendToUser(
+                message.getSenderId(),
+                "/queue/rooms",
+                savedMessage);
+
+        simpMessagingTemplate.convertAndSendToUser(
+                message.getRecipientId(),
+                "/queue/rooms",
+                savedMessage);
     }
 
     // REST API để lấy danh sách tin nhắn (dùng cho load lịch sử chat)
