@@ -44,8 +44,6 @@ public class RoomController {
         // Gọi service để cập nhật lastMessage
         roomService.updateLastMessage(chatId, message);
 
-        roomService.getAll
-
         return ResponseEntity.ok("Đã cập nhật lastMessage cho chatId: " + chatId);
     }
 }
