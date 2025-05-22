@@ -63,9 +63,11 @@ public class RoomServiceImp implements RoomService {
 
     @Override
     public void updateLastMessage(String chatId, Message message) {
-        roomRepository.findByChatId(chatId).ifPresent(room -> {
+        List<Room> rooms = roomRepository.findAllByChatId(chatId);
+        for (Room room : rooms) {
             room.setLastMessage(message);
             roomRepository.save(room);
-        });
+        }
+        System.out.println(roomRepository.findAllByChatId(chatId));
     }
 }

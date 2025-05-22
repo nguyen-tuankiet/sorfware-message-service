@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sorfware.example.sorfware.model.entity.Message;
 import sorfware.example.sorfware.model.entity.Room;
 import sorfware.example.sorfware.service.RoomService;
 
@@ -25,5 +26,10 @@ public class RoomController {
     public ResponseEntity<List<Room>> getRoomsByUserId(@PathVariable String userId) {
         List<Room> rooms = roomService.getRoomsByUserId(userId);
         return ResponseEntity.ok(rooms);
+    }
+
+    @GetMapping("/lastMessage/{chatId}")
+    public ResponseEntity<Object> updateLastMessage(@PathVariable String chatId, Message message) {
+
     }
 }
