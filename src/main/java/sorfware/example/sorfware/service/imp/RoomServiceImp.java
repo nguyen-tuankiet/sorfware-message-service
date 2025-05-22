@@ -3,6 +3,7 @@ package sorfware.example.sorfware.service.imp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import sorfware.example.sorfware.model.entity.Message;
 import sorfware.example.sorfware.model.entity.Room;
 import sorfware.example.sorfware.repository.RoomRepository;
 import sorfware.example.sorfware.service.RoomService;
@@ -60,4 +61,11 @@ public class RoomServiceImp implements RoomService {
         return chatId;
     }
 
+    @Override
+    public void updateLastMessage(String chatId, Message message) {
+        roomRepository.findByChatId(chatId).ifPresent(room -> {
+            room.setLastMessage(message);
+            roomRepository.save(room);
+        });
+    }
 }
