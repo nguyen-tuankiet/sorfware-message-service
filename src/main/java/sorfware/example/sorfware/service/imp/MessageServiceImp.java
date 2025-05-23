@@ -38,10 +38,11 @@ public class MessageServiceImp implements MessageService {
         return messageRepository.findAll();
     }
 
- //4.2.5.2Truy vấn người dùng từ Database
+
     @Override
     public List<Message> findMessageByKeyword(String keyword) {
- //4.2.5.3Database trả kết quả cho Service
+//4.6.2 Truy vấn tin nhắn từ Database
+//4.6.3 Database trả kết quả cho Service
         return messageRepository.findByContentContainingIgnoreCase(keyword);
     }
 
