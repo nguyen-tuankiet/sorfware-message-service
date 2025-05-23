@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends MongoRepository<Message, String> {
 
+
     List<Message> findByContentContainingIgnoreCase(String keyword); // 4.6.3
 
     /**
@@ -18,3 +19,4 @@ public interface MessageRepository extends MongoRepository<Message, String> {
      * query lấy ra danh sách tin nhắn bằng chatId*/
     List<Message> findByChatIdOrderByTimestampAsc(String chatId);
 }
+
