@@ -26,13 +26,14 @@ public class SearchController {
     public ResponseEntity<ApiResponse> search(@RequestBody SearchRequest request) {
         String keyword = request.getKeyword();
 
-        // Gọi service tìm người dùng theo keyword
+//4.1.5.1 Gọi hàm tìm người dùng theo từ khóa
+//4.1.5.4 Service trả kết quả cho Controller
         List<?> userList = userService.findUserByKeyword(keyword);
-
-        // Gọi service tìm tin nhắn theo keyword
+//4.2.5.1 Gọi hàm tìm tin nhắn theo từ khóa
+//4.2.5.4 Service trả kết quả cho Controller
         List<?> messageList = messageService.findMessageByKeyword(keyword);
 
-        // Tổng hợp kết quả tìm kiếm
+//4.1.6 Tổng hợp kiểm tra kết quả trả về
         SearchResult combinedResult = new SearchResult(userList, messageList);
 
         ApiResponse response = ApiResponse.builder(combinedResult)

@@ -25,8 +25,10 @@ public class UserServiceImp implements UserService {
         return userRepository.findByName(name);
     }
 
+//4.1.5.2Truy vấn người dùng từ Database
     @Override
     public List<User> findUserByKeyword(String keyword) {
+//4.1.5.3Database trả kết quả cho Service
         return userRepository.findByNameContainingIgnoreCase(keyword);
     }
 
