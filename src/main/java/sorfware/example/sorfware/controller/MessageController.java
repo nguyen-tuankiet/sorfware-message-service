@@ -6,16 +6,16 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import sorfware.example.sorfware.model.entity.ChatNotification;
 import sorfware.example.sorfware.model.entity.Message;
 import sorfware.example.sorfware.service.MessageService;
 
 import java.util.List;
 
-@Controller
-public class    MessageController {
+@RestController
+@RequestMapping("api/message")
+public class MessageController {
 
     @Autowired
     private MessageService messageService;
@@ -41,6 +41,17 @@ public class    MessageController {
                         .timestamp(savedMessage.getTimestamp())
                         .build()
         );
+
+        // Gửi sự kiện cập nhật room cho cả 2 người dùng (sender & recipient)
+        simpMessagingTemplate.convertAndSendToUser(
+                message.getSenderId(),
+                "/queue/rooms",
+                savedMessage);
+
+        simpMessagingTemplate.convertAndSendToUser(
+                message.getRecipientId(),
+                "/queue/rooms",
+                savedMessage);
     }
 
     // REST API để lấy danh sách tin nhắn (dùng cho load lịch sử chat)
@@ -48,5 +59,15 @@ public class    MessageController {
     @ResponseBody
     public List<Message> getMessages() {
         return messageService.getAllMessages();
+    }
+
+    /**
+     * Usecase 3: Lịch sử trò chuyện
+     * U3.2: Hiển thị tin nhắn cũ
+     */
+    @GetMapping("/history")
+    @ResponseBody
+    public List<Message> getMessageHistory(@RequestParam String chatId) {
+        return messageService.getMessageHistory(chatId);
     }
 }
