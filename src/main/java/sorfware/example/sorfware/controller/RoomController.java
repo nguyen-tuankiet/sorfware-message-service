@@ -12,6 +12,7 @@ import sorfware.example.sorfware.service.RoomService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/rooms")
@@ -45,5 +46,11 @@ public class RoomController {
         roomService.updateLastMessage(chatId, message);
 
         return ResponseEntity.ok("Đã cập nhật lastMessage cho chatId: " + chatId);
+    }
+
+    @GetMapping("/recipient/{recipientId}")
+    public ResponseEntity<List<String>> getRoomIdByRecipientId(@PathVariable String recipientId) {
+        List<String> roomIds = roomService.getRoomIdsByRecipientId(recipientId);
+        return ResponseEntity.ok(roomIds);
     }
 }

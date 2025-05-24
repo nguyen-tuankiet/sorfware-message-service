@@ -16,4 +16,6 @@ public interface RoomRepository extends MongoRepository<Room, String>, RoomRepos
      * UC3.2
      * Lấy cuộc trò chuyện bằng id người gửi và id người nhận*/
     List<Room> findAllByChatId(String chatId);
+
+    List<Room> findAllByRecipientId(String recipientId);
 }
