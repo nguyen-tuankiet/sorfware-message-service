@@ -29,8 +29,8 @@ public class SearchController {
 //4.5.1 Gọi hàm tìm kiếm người dùng theo từ khóa
 //4.5.4 Service trả kết quả cho Controller
         List<?> userList = userService.findUserByKeyword(keyword);
-//4.6.4Service trả kết quả cho Controlle
 //4.6.1 Gọi hàm tìm kiếm tin nhắn theo từ khóa
+//4.6.4Service trả kết quả cho Controlle
         List<?> messageList = messageService.findMessageByKeyword(keyword);
 //4.7 Tổng hợp kiểm tra kết quả + trả về.
         SearchResult combinedResult = new SearchResult(userList, messageList);
