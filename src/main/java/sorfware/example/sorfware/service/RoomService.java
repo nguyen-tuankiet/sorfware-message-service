@@ -7,7 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoomService {
+     /**
+      * Usecase 2: Nhắn tin
+      * 2.2.2 Nếu phòng chat chưa tồn tại -> tạo phòng chat mới
+      */
      String createChatId(String senderId, String recipientId);
+     /**
+      * Usecase 2: Nhắn tin
+      * FLOW 2.2: Tạo phòng chat (nếu cần): Gọi getRoomId để kiểm tra phòng chat đã tôn tại hay chưa
+      */
      Optional<String> getRoomId(String senderId, String recipientId, boolean createNewRoomIfNotExist);
      /**
       * UC3.1
@@ -20,4 +28,5 @@ public interface RoomService {
       * tin nhắn cuối cùng sẽ được */
      public void updateLastMessage(String chatId, Message message);
 
+     List<String> getRoomIdsByRecipientId(String recipientId);
 }

@@ -26,30 +26,27 @@ public class SearchController {
     public ResponseEntity<ApiResponse> search(@RequestBody SearchRequest request) {
         String keyword = request.getKeyword();
 
-        // Gọi service tìm người dùng theo keyword
+//4.5.1 Gọi hàm tìm kiếm người dùng theo từ khóa
+//4.5.4 Service trả kết quả cho Controller
         List<?> userList = userService.findUserByKeyword(keyword);
-
-        // Gọi service tìm tin nhắn theo keyword
+//4.6.1 Gọi hàm tìm kiếm tin nhắn theo từ khóa
+//4.6.4Service trả kết quả cho Controlle
         List<?> messageList = messageService.findMessageByKeyword(keyword);
-
-        // Tổng hợp kết quả tìm kiếm
+//4.7 Tổng hợp kiểm tra kết quả + trả về.
         SearchResult combinedResult = new SearchResult(userList, messageList);
 
         ApiResponse response = ApiResponse.builder(combinedResult)
                 .message("Search success")
                 .build();
-//        ApiResponse response = new ApiResponse();
+
         response.setStatus(200);
         response.setResultCode(0);
         response.setMessage("Search success");
         response.setData(combinedResult);
-
+//4.7 Tổng hợp kiểm tra kết quả + trả về.
         return ResponseEntity.ok(response);
     }
 
-    // DTO nhận request từ client
 
-
-    // DTO trả về kết quả tìm kiếm
 
 }
