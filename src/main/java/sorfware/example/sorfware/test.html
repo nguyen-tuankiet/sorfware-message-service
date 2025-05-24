@@ -3,339 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat WebSocket Đơn Giản</title>
+    <title>Test Case</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
             font-family: Arial, sans-serif;
+            margin: 20px;
             background-color: #f5f5f5;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
-        .chat-container {
-            max-width: 800px;
-            margin: 20px auto;
-            width: 100%;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+
+        .container {
             background-color: white;
+            padding: 20px;
+            border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .chat-header {
-            background-color: #4b61d1;
-            color: white;
-            padding: 15px;
+
+        h1 {
             text-align: center;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-        }
-        .chat-messages {
-            flex-grow: 1;
-            padding: 15px;
-            overflow-y: auto;
-            max-height: 400px;
-        }
-        .message {
-            margin-bottom: 10px;
-            padding: 8px 15px;
-            border-radius: 20px;
-            max-width: 70%;
-            word-wrap: break-word;
-        }
-        .sender {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
             font-weight: bold;
-            font-size: 0.8em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background-color: #e74c3c;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #c0392b;
+        }
+
+        td {
+            padding: 10px 8px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+            line-height: 1.4;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f0f8ff;
+        }
+
+        .test-id {
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            width: 8%;
+        }
+
+        .description {
+            width: 18%;
+        }
+
+        .steps {
+            width: 18%;
+        }
+
+        .input {
+            width: 15%;
+            background-color: #e8f5e8;
+        }
+
+        .output {
+            width: 15%;
+            background-color: #fff3cd;
+        }
+
+        .expected {
+            width: 26%;
+        }
+
+        .steps ol, .expected ul, .input ul, .output ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .steps li, .expected li, .input li, .output li {
             margin-bottom: 3px;
         }
-        .received {
-            background-color: #e9ecef;
-            align-self: flex-start;
-            border-bottom-left-radius: 5px;
+
+        .emoji {
+            font-size: 16px;
         }
-        .sent {
-            background-color: #d1e7ff;
-            align-self: flex-end;
-            margin-left: auto;
-            border-bottom-right-radius: 5px;
-        }
-        .message-time {
-            font-size: 0.7em;
-            color: #777;
-            text-align: right;
-            margin-top: 2px;
-        }
-        .chat-input {
-            display: flex;
-            padding: 15px;
-            border-top: 1px solid #ddd;
-        }
-        .chat-input input {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            margin-right: 10px;
-        }
-        .chat-input button {
-            background-color: #4b61d1;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-        .chat-input button:hover {
-            background-color: #3a4cb7;
-        }
-        .status {
-            padding: 10px;
-            text-align: center;
-            background-color: #f9f9f9;
-            border-bottom: 1px solid #ddd;
-        }
-        .online {
-            color: green;
-        }
-        .offline {
-            color: red;
-        }
-        .username-container {
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-        }
-        .username-container input {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            margin-right: 10px;
-        }
-        .username-container button {
-            background-color: #4b61d1;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
+
+        .highlight {
+            background-color: #ffffcc;
+            padding: 2px 4px;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
-<div class="chat-container">
-    <div class="chat-header">
-        <h2>Chat WebSocket Đơn Giản</h2>
-    </div>
-    <div class="status" id="status">
-        <span class="offline">Đang ngắt kết nối</span>
-    </div>
-    <div id="username-form" class="username-container">
-        <input type="text" id="username" placeholder="Nhập tên của bạn" value="User1">
-        <button id="connect-btn">Kết nối</button>
-    </div>
-    <div class="chat-messages" id="messages">
-        <!-- Messages will be added here -->
-    </div>
-    <div class="chat-input">
-        <input type="text" id="message" placeholder="Nhập tin nhắn..." disabled>
-        <button id="send-btn" disabled>Gửi</button>
-    </div>
+<div class="container">
+    <h1>TEST CASE</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Mục tiêu</th>
+            <th>Tần điều kiện</th>
+            <th>Input</th>
+            <th>Output</th>
+            <th>Bước thực hiện</th>
+            <th>Kết quả mong đợi</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="test-id">TC_CHAT_001</td>
+            <td class="description">Kiểm tra gọi tài gửi nhận với nhật kể trò chuyện thông thường</td>
+            <td class="steps">
+                <ul>
+                    <li>User đã đăng nhập</li>
+                    <li>Đang trong conversation</li>
+                    <li>WebSocket đã kết nối</li>
+                </ul>
+            </td>
+            <td class="input">
+                <ul>
+                    <li>Message: <span class="highlight">"Hello World"</span></li>
+                    <li>User ID: 12345</li>
+                    <li>Session: active</li>
+                </ul>
+            </td>
+            <td class="output">
+                <ul>
+                    <li>Response status: 200</li>
+                    <li>Message delivered</li>
+                    <li>Timestamp generated</li>
+                </ul>
+            </td>
+            <td class="steps">
+                <ol>
+                    <li>Nhấp kết nối internet/WebSocket</li>
+                    <li>Nhấp tin nhắn vào ô "Hello World"</li>
+                    <li>Click nút gửi</li>
+                    <li>Xem phản hồi từ internet</li>
+                </ol>
+            </td>
+            <td class="expected">
+                <ul>
+                    <li>Tin nhắn được gửi đi thành công</li>
+                    <li>Tin nhắn được hiển thị trong hội thoại</li>
+                    <li>Có nhận ghi về thời gian màn hình nếu có lỗi tin</li>
+                </ul>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="test-id">TC_CHAT_002</td>
+            <td class="description">Kiểm tra nhận tin từ tài nhận với nhật kể gửi không</td>
+            <td class="steps">
+                <ul>
+                    <li>User đã đăng nhập</li>
+                    <li>Đang trong conversation</li>
+                    <li>WebSocket đã kết nối</li>
+                </ul>
+            </td>
+            <td class="input">
+                <ul>
+                    <li>Message: <span class="highlight">"Hello"</span></li>
+                    <li>Special chars: <span class="emoji">😀 🎉</span></li>
+                    <li>Long text: 500+ chars</li>
+                </ul>
+            </td>
+            <td class="output">
+                <ul>
+                    <li>Error handling triggered</li>
+                    <li>User notification shown</li>
+                    <li>Retry mechanism activated</li>
+                </ul>
+            </td>
+            <td class="steps">
+                <ol>
+                    <li>Gửi tin nhắn vào ô "Hello"</li>
+                    <li>Gửi tin nhắn có emoji "Hello 😀 🎉"</li>
+                    <li>Gửi tin nhắn dài "Check https://google.com"</li>
+                    <li>Gửi tin nhắn không đúng "Live TikTok"</li>
+                </ol>
+            </td>
+            <td class="expected">
+                <ul>
+                    <li>Tin nhắn hiển thị đúng định dạng UI</li>
+                    <li>Emoji nhận tin đúng</li>
+                    <li>Link được format thành hyperlink</li>
+                </ul>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="test-id">TC_CHAT_003</td>
+            <td class="description">Gửi tin nhắn từ nhiều tab</td>
+            <td class="steps">
+                <ul>
+                    <li>User mở 2 tab trình duyệt đã login</li>
+                    <li>WebSocket kết nối</li>
+                </ul>
+            </td>
+            <td class="input">
+                <ul>
+                    <li>Tab A: <span class="highlight">"Hi from tab A"</span></li>
+                    <li>Tab B: <span class="highlight">"Hi from tab B"</span></li>
+                    <li>Send timing: Gần như cùng lúc</li>
+                </ul>
+            </td>
+            <td class="output">
+                <ul>
+                    <li>Tin xuất hiện đúng ở cả 2 tab</li>
+                    <li>Đồng bộ WebSocket</li>
+                    <li>Message order preserved</li>
+                </ul>
+            </td>
+            <td class="steps">
+                <ol>
+                    <li>Gửi từ tab A</li>
+                    <li>Gửi từ tab B gần như cùng lúc</li>
+                </ol>
+            </td>
+            <td class="expected">
+                <ul>
+                    <li>Đồng bộ realtime</li>
+                    <li>Tin hiển thị đúng thứ tự ở cả 2 tab</li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-<script>
-    // DOM Elements
-    const statusEl = document.getElementById('status');
-    const messagesEl = document.getElementById('messages');
-    const messageInput = document.getElementById('message');
-    const sendBtn = document.getElementById('send-btn');
-    const usernameInput = document.getElementById('username');
-    const connectBtn = document.getElementById('connect-btn');
-    const usernameForm = document.getElementById('username-form');
-
-    let stompClient = null;
-    let username = '';
-
-    // Connect to WebSocket
-    function connect() {
-        username = usernameInput.value.trim();
-        if (!username) {
-            alert('Vui lòng nhập tên của bạn!');
-            return;
-        }
-
-        // Create STOMP client
-        stompClient = new StompJs.Client({
-            brokerURL: 'ws://localhost:8080/ws/websocket',
-            debug: function(str) {
-                console.log(str);
-            },
-            reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000
-        });
-
-        // Connect callback
-        stompClient.onConnect = function (frame) {
-            // Update UI
-            statusEl.innerHTML = '<span class="online">Đã kết nối</span>';
-            messageInput.disabled = false;
-            sendBtn.disabled = false;
-            usernameInput.disabled = true;
-            connectBtn.disabled = true;
-
-            // Subscribe to public channel
-            stompClient.subscribe('/topic/public', function (message) {
-                showMessage(JSON.parse(message.body));
-            });
-
-            // Send join notification
-            sendMessage({
-                senderName: username,
-                content: 'đã tham gia cuộc trò chuyện',
-                isJoinMessage: true
-            });
-        };
-
-        // Error callback
-        stompClient.onStompError = function (frame) {
-            console.error('Stomp error', frame);
-            statusEl.innerHTML = '<span class="offline">Lỗi kết nối: ' + frame.headers['message'] + '</span>';
-        };
-
-        // Disconnect callback
-        stompClient.onWebSocketClose = function() {
-            statusEl.innerHTML = '<span class="offline">Đã ngắt kết nối</span>';
-            messageInput.disabled = true;
-            sendBtn.disabled = true;
-            usernameInput.disabled = false;
-            connectBtn.disabled = false;
-        };
-
-        // Activate connection
-        stompClient.activate();
-    }
-
-    // Disconnect from WebSocket
-    function disconnect() {
-        if (stompClient) {
-            // Send leave notification
-            sendMessage({
-                senderName: username,
-                content: 'đã rời khỏi cuộc trò chuyện',
-                isLeaveMessage: true
-            });
-
-            // Disconnect client
-            stompClient.deactivate();
-            stompClient = null;
-        }
-
-        // Update UI
-        statusEl.innerHTML = '<span class="offline">Đã ngắt kết nối</span>';
-        messageInput.disabled = true;
-        sendBtn.disabled = true;
-        usernameInput.disabled = false;
-        connectBtn.disabled = false;
-    }
-
-    // Send message to server
-    function sendMessage(messageObj) {
-        if (!stompClient || !stompClient.connected) {
-            alert('Không thể gửi tin nhắn. Vui lòng kết nối lại!');
-            return;
-        }
-
-        // Check nếu thiếu content hoặc senderName
-        if (!messageObj || !messageObj.content || !messageObj.senderName) {
-            console.warn('Không gửi được: thiếu nội dung hoặc tên người gửi');
-            return;
-        }
-
-        console.log("Gửi tin nhắn:", messageObj);
-
-        stompClient.publish({
-            destination: '/app/chat.sendMessage',
-            body: JSON.stringify(messageObj)
-        });
-
-        // Nếu không phải tin nhắn tham gia/rời nhóm thì clear input
-        if (!messageObj.isJoinMessage && !messageObj.isLeaveMessage) {
-            messageInput.value = '';
-            messageInput.focus();
-        }
-    }
-
-
-    // Show received message in UI
-    function showMessage(message) {
-        const timestamp = new Date().toLocaleTimeString();
-        const messageEl = document.createElement('div');
-
-        if (message.isJoinMessage || message.isLeaveMessage) {
-            // System message
-            messageEl.innerHTML = `
-                    <div class="message" style="text-align: center; background-color: #f0f0f0; margin: 5px auto; padding: 5px 15px; border-radius: 10px; color: #666;">
-                        <b>${message.senderName}</b> ${message.content}
-                        <div class="message-time">${timestamp}</div>
-                    </div>
-                `;
-        } else {
-            // Check if it's sent by current user
-            const isSentByMe = message.senderName === username;
-            const messageClass = isSentByMe ? 'sent' : 'received';
-
-            messageEl.innerHTML = `
-                    <div class="message ${messageClass}">
-                        <div class="sender">${message.senderName}</div>
-                        ${message.content}
-                        <div class="message-time">${timestamp}</div>
-                    </div>
-                `;
-        }
-
-        messagesEl.appendChild(messageEl);
-
-        // Scroll to bottom
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-
-    // Event Listeners
-    connectBtn.addEventListener('click', connect);
-
-    sendBtn.addEventListener('click', function() {
-        const content = messageInput.value.trim();
-        if (content) {
-            sendMessage({
-                senderName: username,
-                content: content
-            });
-        }
-    });
-
-    messageInput.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            const content = messageInput.value.trim();
-            if (content) {
-                sendMessage({
-                    senderName: username,
-                    content: content
-                });
-            }
-        }
-    });
-
-    // Handle window close
-    window.addEventListener('beforeunload', disconnect);
-</script>
 </body>
 </html>

@@ -25,15 +25,18 @@ public class MessageController {
 
     /*
     Usecase 2: Nhắn tin
+    Flow 2.1, 2.3, 2.6 bên FE - MainChat.jsx
      */
     @MessageMapping("/chat")
     public void processMessage(@Payload Message message) {
         System.out.println("Message: " + message);
+        // FLOW 2.4.1: Lưu tin nhắn vào DB thông qua MessageService
         Message savedMessage = messageService.save(message);
-        simpMessagingTemplate.convertAndSendToUser(
-                message.getRecipientId(),
-                "/queue/messages",
-                ChatNotification.builder()
+        // FLOW 2.5.1: Tạo ChatNotification từ Message đã lưu và Gửi thông báo đến người nhận thông qua WebSocket
+        simpMessagingTemplate.convertAndSendToUser(             // Gửi thông báo đến người nhận thông qua WebSocket
+                message.getRecipientId(),                      // Người nhận
+                "/queue/messages",                            // Kênh gửi đến
+                ChatNotification.builder()                // Tạo ChatNotification từ Message đã lưu
                         .id(savedMessage.getId())
                         .senderId(savedMessage.getSenderId())
                         .recipientId(savedMessage.getRecipientId())

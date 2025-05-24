@@ -22,15 +22,19 @@ public class MessageServiceImp implements MessageService {
     private final RoomService roomService;
     private final MongoTemplate mongoTemplate;
 
+    /*
+        Usecase 2: Nhắn tin
+        Flow 2.1, 2.3, 2.6 bên FE - MainChat.jsx
+   */
     public Message save(Message message) {
+        // FLOW 2.2: Tạo phòng chat (nếu cần): Gọi getRoomId để kiểm tra phòng chat đã tôn tại hay chua
         var chatId = roomService.getRoomId(message.getSenderId(), message.getRecipientId(), true)
                 .orElseThrow(() -> new RuntimeException("Cannot create chatId"));
         message.setChatId(chatId);
+        //Lưu tin nhắn vào database
         messageRepository.save(message);
-
         //Cập nhật tin nhắn cuối trong phòng chat
         roomService.updateLastMessage(chatId, message);
-
         return message;
     }
 
