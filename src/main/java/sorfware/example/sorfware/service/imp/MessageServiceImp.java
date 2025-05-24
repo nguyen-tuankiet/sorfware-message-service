@@ -27,6 +27,10 @@ public class MessageServiceImp implements MessageService {
                 .orElseThrow(() -> new RuntimeException("Cannot create chatId"));
         message.setChatId(chatId);
         messageRepository.save(message);
+
+        //Cập nhật tin nhắn cuối trong phòng chat
+        roomService.updateLastMessage(chatId, message);
+
         return message;
     }
 
@@ -34,19 +38,18 @@ public class MessageServiceImp implements MessageService {
         return messageRepository.findAll();
     }
 
+
     @Override
     public List<Message> findMessageByKeyword(String keyword) {
-        return messageRepository.findByContentContainingIgnoreCase(keyword);  // 4.6.2
+//4.6.2 Truy vấn tin nhắn từ Database
+//4.6.3 Database trả kết quả cho Service
+        return messageRepository.findByContentContainingIgnoreCase(keyword);
     }
 
     //Phương thức lấy tin nhắn giữa 2 người
     @Override
     public List<Message> getMessageHistory(String chatId) {
         return messageRepository.findByChatIdOrderByTimestampAsc(chatId);
-    }
-
-    //Khi có tin nhắn mới thì cập nhật lastMessage trong Room
-    public void updateLastMessage(String chatId, Message message) {
     }
 
 }
