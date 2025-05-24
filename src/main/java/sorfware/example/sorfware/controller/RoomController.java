@@ -23,13 +23,15 @@ public class RoomController {
 
     /**
      * UC3.2
-     * controller Lấy cuộc trò chuyện bằng id người gửi và id người nhận*/
+     * controller Lấy cuộc trò chuyện bằng id người gửi và id người nhận
+     * FLOW: - 3.2. Hệ thống truy xuất danh sách cuộc trò chuyện dựa trên user id của người dùng hiện tại từ MongoDB*/
     @GetMapping("/{userId}")
     public ResponseEntity<List<Room>> getRoomsByUserId(@PathVariable String userId) {
         List<Room> rooms = roomService.getRoomsByUserId(userId);
         return ResponseEntity.ok(rooms);
     }
 
+    //Test API cập nhật tin nhắn cuối trong phòng chat
     @GetMapping("/lastMessage/{chatId}")
     public ResponseEntity<Object> updateLastMessage(@PathVariable String chatId) {
         // Tạo một tin nhắn giả lập để test

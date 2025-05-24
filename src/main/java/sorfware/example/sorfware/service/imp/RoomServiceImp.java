@@ -64,6 +64,8 @@ public class RoomServiceImp implements RoomService {
         return chatId;
     }
 
+    /**UC3:
+     * Cập nhật tin nhắn cuối cùng trong phòng chat*/
     @Override
     public void updateLastMessage(String chatId, Message message) {
         List<Room> rooms = roomRepository.findAllByChatId(chatId);

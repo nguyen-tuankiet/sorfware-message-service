@@ -50,6 +50,9 @@ public class MessageServiceImp implements MessageService {
         return messageRepository.findByContentContainingIgnoreCase(keyword);
     }
 
+    /**
+     * UC3.2 Lịch sử tin nhắn
+     * - 3.5. Hệ thống truy xuất danh sách tin nhắn dựa trên room id từ MongoDB*/
     //Phương thức lấy tin nhắn giữa 2 người
     @Override
     public List<Message> getMessageHistory(String chatId) {

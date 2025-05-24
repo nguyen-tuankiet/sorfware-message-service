@@ -67,6 +67,7 @@ public class MessageController {
     /**
      * Usecase 3: Lịch sử trò chuyện
      * U3.2: Hiển thị tin nhắn cũ
+     * FLOW - 3.6. Hệ thống hiển thị nội dung các tin nhắn đã gửi/nhận trong cuộc trò chuyện đó
      */
     @GetMapping("/history")
     @ResponseBody
