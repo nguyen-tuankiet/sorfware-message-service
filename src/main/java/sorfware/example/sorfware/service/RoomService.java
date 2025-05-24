@@ -28,4 +28,5 @@ public interface RoomService {
       * tin nhắn cuối cùng sẽ được */
      public void updateLastMessage(String chatId, Message message);
 
+     List<String> getRoomIdsByRecipientId(String recipientId);
 }

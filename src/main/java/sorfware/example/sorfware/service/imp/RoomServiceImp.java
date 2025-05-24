@@ -10,6 +10,7 @@ import sorfware.example.sorfware.service.RoomService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +74,7 @@ public class RoomServiceImp implements RoomService {
         System.out.println(roomRepository.findAllByChatId(chatId));
     }
 
+
     /**
      * UC3.1
      * service Hiển thị danh sách cuộc trò chuyện theo id user và sắp xếp theo thời gian tin nhắn cuối cùng*/
@@ -81,4 +83,12 @@ public class RoomServiceImp implements RoomService {
         return roomRepository.findRoomsByUserId(userId);
     }
 
+    @Override
+    public List<String> getRoomIdsByRecipientId(String recipientId) {
+        List<Room> rooms = roomRepository.findAllByRecipientId(recipientId);
+        return rooms.stream()
+                .map(Room::getChatId)
+                .distinct() // Loại bỏ các chatId trùng lặp
+                .collect(Collectors.toList());
+    }
 }
