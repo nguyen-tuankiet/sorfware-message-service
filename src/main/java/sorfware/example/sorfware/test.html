@@ -123,7 +123,7 @@
         <tbody>
         <tr>
             <td class="test-id">TC_CHAT_001</td>
-            <td class="description">Kiểm tra gọi tài gửi nhận với nhật kể trò chuyện thông thường</td>
+            <td class="description">Kiểm tra tin nhắn thông thường</td>
             <td class="steps">
                 <ul>
                     <li>User đã đăng nhập</li>
@@ -135,7 +135,6 @@
                 <ul>
                     <li>Message: <span class="highlight">"Hello World"</span></li>
                     <li>User ID: 12345</li>
-                    <li>Session: active</li>
                 </ul>
             </td>
             <td class="output">
@@ -147,16 +146,15 @@
             </td>
             <td class="steps">
                 <ol>
-                    <li>Nhấp kết nối internet/WebSocket</li>
-                    <li>Nhấp tin nhắn vào ô "Hello World"</li>
+                    <li>Nhập tin nhắn vào ô "Hello World"</li>
                     <li>Click nút gửi</li>
-                    <li>Xem phản hồi từ internet</li>
+                    <li>Xem phản hồi từ UI</li>
                 </ol>
             </td>
             <td class="expected">
                 <ul>
                     <li>Tin nhắn được gửi đi thành công</li>
-                    <li>Tin nhắn được hiển thị trong hội thoại</li>
+                    <li>Tin nhắn được hiển thị ngay trong hội thoại</li>
                     <li>Có nhận ghi về thời gian màn hình nếu có lỗi tin</li>
                 </ul>
             </td>
@@ -164,7 +162,7 @@
 
         <tr>
             <td class="test-id">TC_CHAT_002</td>
-            <td class="description">Kiểm tra nhận tin từ tài nhận với nhật kể gửi không</td>
+            <td class="description">Kiểm tra nhận tin nhắn với nhiều định dạng</td>
             <td class="steps">
                 <ul>
                     <li>User đã đăng nhập</li>
@@ -191,7 +189,7 @@
                     <li>Gửi tin nhắn vào ô "Hello"</li>
                     <li>Gửi tin nhắn có emoji "Hello 😀 🎉"</li>
                     <li>Gửi tin nhắn dài "Check https://google.com"</li>
-                    <li>Gửi tin nhắn không đúng "Live TikTok"</li>
+                    <li>Gửi tin nhắn "Video"</li>
                 </ol>
             </td>
             <td class="expected">
